@@ -1,5 +1,15 @@
+const { TokenExpiredError } = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
+// const db = require('../../data/dbConfig')
+
 module.exports = (req, res, next) => {
+  if(req.session.user){
   next();
+  } else if (!token) {
+    next({ status: 401, message: 'token required'})
+  } else if(TokenExpiredError){
+    next({ status: 401, message: 'token invalid'})
+  }
   /*
     IMPLEMENT
 
