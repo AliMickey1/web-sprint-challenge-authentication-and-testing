@@ -1,15 +1,21 @@
-const { TokenExpiredError } = require("jsonwebtoken");
 const jwt = require('jsonwebtoken')
-// const db = require('../../data/dbConfig')
+const { JWT_SECRET } = require('../Secrets/secrets')
+
 
 module.exports = (req, res, next) => {
-  if(req.session.user){
-  next();
-  } else if (!token) {
-    next({ status: 401, message: 'token required'})
-  } else if(TokenExpiredError){
-    next({ status: 401, message: 'token invalid'})
-  }
+  const token = req.headers.authorization
+  if(!token) {
+    return next({ status: 401, message: "Token required"})
+  } 
+  jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+    if (err) {
+      next({ status: 401, message: "Token invalid"})
+    }
+    else {
+      req.decodedToken = decodedToken
+      next()
+    }
+  })
   /*
     IMPLEMENT
 
