@@ -1,9 +1,9 @@
 // Write your tests here
-const request = require('supertest')
+// const request = require('supertest')
 const db = require('../data/dbConfig')
-const server = require('./server')
+// const server = require('./server')
 const Users = require('./Users/userModel')
-const Auth = require('./auth/auth-router')
+// const Auth = require('./auth/auth-router')
 
 
 test('sanity', () => {
@@ -38,21 +38,3 @@ describe('User model functions', () => {
   })
 
 })
-
-// describe('[POST] /api/auth/register', ()=> {
-//   test('adds a user to the database', async () => {
-//     const res = await request(server).post('/api/auth/register').send(user1)
-//     expect(res.body).toHaveLength(1)
-//   })
-//   it('responds with 200 ok', async () => {
-//       const res = await request(server).get('/api/auth/register')
-//       expect(res.status).toBe(200)
-//   })
-// })
-
-// describe('[POST] /api/auth/login', () => {
-//   it('responds with 201', async () => {
-//       const res = await request(server).post('/api/auth/login')
-//       expect(res.status).toBe(201)
-//   })
-// })

@@ -1,9 +1,12 @@
 const Users = require('../Users/userModel')
+const db = require('../../data/dbConfig')
+
 
 
 async function checkUsernameFree (req, res, next) {
     try{  
       const user = await Users.findBy({ username: req.body.username })
+
         if(user) {
           next({ status: 422, message: 'Username taken' })
         } else {
@@ -18,19 +21,27 @@ async function checkUsernameFree (req, res, next) {
     async function checkLoginCred (req, res, next) {
         try{
             const {username, password} = req.body
-            const user = await Users.findBy({ username })
+            const [user] = await db('users').where('username', username)
 
-            if(username && password) {
+
+            if(user === null || user === undefined) {
+                console.log('failed in middleware')
+            res.json({
+                status: 401, 
+                message: 'Invalid credentials'
+            })
+            } else if (!username || username === null || password === null || !password) {
+                res.json({
+                        status: 401, 
+                        message: 'username and password required'
+                    })
+            }  
+            else {
                 req.username = username
                 req.password = password
                 console.log('passed')
               next()
-            } else if (!username || !password) {
-                next({ status: 401, message: 'username and password required' })
-            } else if(!user) {
-                console.log('failed in middleware')
-              next({ status: 401, message: 'Invalid credentials' })
-            }
+            } 
             
         }
         catch(err) {
