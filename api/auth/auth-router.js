@@ -107,10 +107,15 @@ try{
               password
             }
           const token = buildToken(user)
+         if(valid === true) {
           res.status(200).json({ 
             message: `welcome, ${username}`,
             token,
           }) 
+        }
+          else {
+               res.status(401).json('Invalid credentials')
+              }
         })
         // } else {
         //   console.log(`${username}, ${password}`)

@@ -38,7 +38,6 @@ async function checkUsernameFree (req, res, next) {
         else {
             req.username = username
             req.password = password
-            console.log('passed')
             next()
         } 
             
