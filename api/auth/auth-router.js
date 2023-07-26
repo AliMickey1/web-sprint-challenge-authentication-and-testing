@@ -94,12 +94,13 @@ router.post('/login', checkLoginCred, (req, res, next) => {
 try{
       const {id, username, password} = req.body
       
-      // db('users').where('username', username).first()
-      //   .then(user => {
-          // const valid = bcrypt.compareSync(password, req.password)
+      db('users').where('username', username).first()
+  .then(users => {
+          const valid = bcrypt.compareSync(password, users.password)
           // const [user] = db('users').where('username', username)
           // .select('username')
-
+          console.log(`valid: ${valid}`)
+          // if(valid) {
             const user = {
               id,
               username,
@@ -110,6 +111,7 @@ try{
             message: `welcome, ${username}`,
             token,
           }) 
+        })
         // } else {
         //   console.log(`${username}, ${password}`)
         //     next({ status: 401, message: 'Invalid credentials'})
