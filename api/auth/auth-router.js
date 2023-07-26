@@ -117,12 +117,6 @@ try{
                res.status(401).json('Invalid credentials')
               }
         })
-        // } else {
-        //   console.log(`${username}, ${password}`)
-        //     next({ status: 401, message: 'Invalid credentials'})
-        //   }
-        // })
-
       }
       catch(err) {
         next(err)
