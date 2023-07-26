@@ -18,14 +18,17 @@ async function checkUsernameFree (req, res, next) {
     async function checkLoginCred (req, res, next) {
         try{
             const {username, password} = req.body
-            // const user = await Users.findBy({ username: req.body.username })
+            const user = await Users.findBy({ username })
+
             if(username && password) {
                 req.username = username
                 req.password = password
+                console.log('passed')
               next()
             } else if (!username || !password) {
                 next({ status: 401, message: 'username and password required' })
-            } else {
+            } else if(!user) {
+                console.log('failed in middleware')
               next({ status: 401, message: 'Invalid credentials' })
             }
             

@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const db = require('../../data/dbConfig')
 const bcrypt = require('bcryptjs')
-const User = require('../Users/userModel')
 const { checkLoginCred, checkUsernameFree } = require('../middleware/middleware')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../Secrets/secrets')
@@ -63,7 +62,7 @@ router.post('/register', checkUsernameFree, async (req, res, next) => {
     }
 });
 
-// router.post('/login', checkLoginCred, checkRequiredInfo, (req, res) => {
+
 router.post('/login', checkLoginCred, (req, res, next) => {
 
   // res.end('implement login, please!');
@@ -91,23 +90,31 @@ router.post('/login', checkLoginCred, (req, res, next) => {
       the response body should include a string exactly as follows: "invalid credentials".
   */
 try{
-      const {username, password} = req.body
+      const {id, username, password} = req.body
       
-
-
-      db('users').where('username', username).first()
-        .then(user => {
-          const valid = bcrypt.compareSync(password, user.password)
-          if(user && valid) {
+      // db('users').where('username', username).first()
+      //   .then(user => {
+          // const valid = bcrypt.compareSync(password, req.password)
+          console.log(`req.password ${req.password}`)
+          // console.log(`valid: ${valid}`)
+          console.log(`req.username ${req.username}`)
+          // console.log(`user: ${user}`)
+          // if(bcrypt.compareSync(password, req.password)) {
+            const user = {
+              id,
+              username,
+              password
+            }
           const token = buildToken(user)
           res.json({ 
-            message: `welcome, ${user.username}`,
+            message: `welcome, ${username}`,
             token,
           }) 
-        } else {
-            next({ status: 401, message: 'Invalid credentials'})
-          }
-        })
+        // } else {
+        //   console.log(`${username}, ${password}`)
+        //     next({ status: 401, message: 'Invalid credentials'})
+        //   }
+        // })
 
       }
       catch(err) {
