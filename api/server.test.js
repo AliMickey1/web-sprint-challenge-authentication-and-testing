@@ -32,10 +32,27 @@ describe('User model functions', () => {
       await Users.add(user1)
       user = await db('users')
       expect(user).toHaveLength(1)
+      await Users.add(user2)
+      user = await db('users')
+      expect(user).toHaveLength(2)
   })
-  it('inserted user', async () => {
-      const user = await Users.add(user1)
-      expect(user).toMatchObject({ id:1,...user })
 
+})
+
+describe('[POST] /api/auth/register', ()=> {
+  test('adds a user to the database', async () => {
+    const res = await request(server).post('/api/auth/register').send(user1)
+    expect(res.body).toHaveLength(1)
+  })
+  it('responds with 200 ok', async () => {
+      const res = await request(server).get('/api/auth/register')
+      expect(res.status).toBe(200)
+  })
+})
+
+describe('[POST] /api/auth/login', () => {
+  it('responds with 201', async () => {
+      const res = await request(server).post('/api/auth/login')
+      expect(res.status).toBe(201)
   })
 })

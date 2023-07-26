@@ -1,14 +1,24 @@
 const router = require('express').Router();
+const db = require('../../data/dbConfig')
 const bcrypt = require('bcryptjs')
 const User = require('../Users/userModel')
-const { checkUsernameExists, checkUsernameFree, checkRequiredInfo } = require('../middleware/middleware')
+const { checkLoginCred, checkUsernameFree } = require('../middleware/middleware')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../Secrets/secrets')
 
+function buildToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username,
+  }
+  const options = {
+    expiresIn: '1d'
+  }
+  return jwt.sign(payload, JWT_SECRET, options)
+}
 
 
-
-router.post('/register', checkUsernameFree, (req, res) => {
+router.post('/register', checkUsernameFree, async (req, res, next) => {
   // res.end('implement register, please!');
   /*
     IMPLEMENT
@@ -35,30 +45,27 @@ router.post('/register', checkUsernameFree, (req, res) => {
     4- On FAILED registration due to the `username` being taken,
       the response body should include a string exactly as follows: "username taken".
   */
+ try{
       const { username, password } = req.body
-      const hash = bcrypt.hashSync(password, 8)
+    const hash = await bcrypt.hashSync(password, 8)
 
       const credentials = {
         username,
         password: hash
       }
 
-      User.add(credentials)
-        .then(save => {
-          res.status(201).json(save)
-          // res.json({
-          //   status: 201, 
-          //   message: `${save} has created an account`,
-          //   save,
-          // })
-        })
-        .catch(err => {
-          console.log('implement register, please!')
-          console.log(err)
-        })
+      const newOne = await db('users').insert(credentials)
+      const [result] = await db('users').where('id', newOne)
+      res.status(201).json(result)
+
+    } catch(err) {
+      next(err)
+    }
 });
 
-router.post('/login', checkUsernameExists, checkRequiredInfo, (req, res, next) => {
+// router.post('/login', checkLoginCred, checkRequiredInfo, (req, res) => {
+router.post('/login', checkLoginCred, (req, res, next) => {
+
   // res.end('implement login, please!');
   /*
     IMPLEMENT
@@ -83,35 +90,28 @@ router.post('/login', checkUsernameExists, checkRequiredInfo, (req, res, next) =
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+try{
+      const {username, password} = req.body
+      
 
-      // const { password } = req.body
 
-      // const valid = bcrypt.compareSync(req.user.password, password)
-      // if(valid) {
-      //   req.session.user = req.user
-      //   res.json({ message: `welcome, ${req.body.username}`})
-      // } else if(!req.body.username || !password) {
-      //   res.json({ status: 401, message: 'username and password required'})
-      // }
-      if (bcrypt.compareSync(req.body.password, req.user.password)) {
-        const token = buildToken(req.user)
-        res.json({ 
-          message: `welcome, ${req.user.username}`,
-          token,
+      db('users').where('username', username).first()
+        .then(user => {
+          const valid = bcrypt.compareSync(password, user.password)
+          if(user && valid) {
+          const token = buildToken(user)
+          res.json({ 
+            message: `welcome, ${user.username}`,
+            token,
+          }) 
+        } else {
+            next({ status: 401, message: 'Invalid credentials'})
+          }
         })
-      } else {
-        next({ status: 401, message: 'Invalid credentials'})
+
       }
-  
-      function buildToken(user) {
-        const payload = {
-          subject: user.id,
-          username: user.username,
-        }
-        const options = {
-          expiresIn: '1d'
-        }
-        return jwt.sign(payload, JWT_SECRET, options)
+      catch(err) {
+        next(err)
       }
 });
 

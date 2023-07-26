@@ -15,12 +15,16 @@ async function checkUsernameFree (req, res, next) {
       }
     }
   
-    async function checkUsernameExists(req, res, next) {
+    async function checkLoginCred (req, res, next) {
         try{
-            const user = await Users.findBy({ username: req.body.username })
-            if(user) {
-              req.user = user
+            const {username, password} = req.body
+            // const user = await Users.findBy({ username: req.body.username })
+            if(username && password) {
+                req.username = username
+                req.password = password
               next()
+            } else if (!username || !password) {
+                next({ status: 401, message: 'username and password required' })
             } else {
               next({ status: 401, message: 'Invalid credentials' })
             }
@@ -32,26 +36,9 @@ async function checkUsernameFree (req, res, next) {
         
         }
   
-        // On FAILED login due to `username` or `password` missing from the request body,
-        // the response body should include a string exactly as follows: "username and password required".
 
-    async function checkRequiredInfo (req, res, next) {
-        try{
-            const user = await Users.findBy({ username: req.body.username })
-            const pass = await Users.findBy({ password: req.body.password })
-
-            if(!user || !pass) {
-                next({ status: 401, message: 'username and password required' })
-            } else {
-                next()
-            }
-        }
-        catch(err) {
-            next(err)
-        }
-    } 
   module.exports = {
-    checkUsernameExists,
+    checkLoginCred,
     checkUsernameFree,
-    checkRequiredInfo,
+
   }
