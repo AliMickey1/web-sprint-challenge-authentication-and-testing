@@ -46,6 +46,8 @@ router.post('/register', checkUsernameFree, async (req, res, next) => {
   */
  try{
       const { username, password } = req.body
+
+
     const hash = await bcrypt.hashSync(password, 8)
 
       const credentials = {
@@ -95,18 +97,16 @@ try{
       // db('users').where('username', username).first()
       //   .then(user => {
           // const valid = bcrypt.compareSync(password, req.password)
-          console.log(`req.password ${req.password}`)
-          // console.log(`valid: ${valid}`)
-          console.log(`req.username ${req.username}`)
-          // console.log(`user: ${user}`)
-          // if(bcrypt.compareSync(password, req.password)) {
+          // const [user] = db('users').where('username', username)
+          // .select('username')
+
             const user = {
               id,
               username,
               password
             }
           const token = buildToken(user)
-          res.json({ 
+          res.status(200).json({ 
             message: `welcome, ${username}`,
             token,
           }) 

@@ -1,18 +1,25 @@
-const Users = require('../Users/userModel')
+// const Users = require('../Users/userModel')
 const db = require('../../data/dbConfig')
 
 
 
 async function checkUsernameFree (req, res, next) {
     try{  
-      const user = await Users.findBy({ username: req.body.username })
-
-        if(user) {
-          next({ status: 422, message: 'Username taken' })
-        } else {
-          next()
+        const { username } = req.body
+    //   const user = await Users.findBy({ username: req.body.username })
+    const [user] = await db('users').where('username', username)
+        .select('username')
+        // console.log(user)
+        if (!user){
+            next()
         }
-      }
+        else if(user.username) {
+          res.json({ 
+            status: 422, 
+            message: 'Username taken' 
+        })
+        }  
+    }
       catch(err) {
         next(err)
       }
@@ -20,40 +27,31 @@ async function checkUsernameFree (req, res, next) {
   
     async function checkLoginCred (req, res, next) {
         try{
-            const {username, password} = req.body
-            // const user = await Users.findBy({ username })
-            const [user] = await db('users').where('username', username)
-                .select('username')
+        const {username, password} = req.body
 
-                    console.log(`
-                    users: ${user}
-                    username: ${username}`)
+        //   const user = await Users.findBy({ username: req.body.username })
+        const [user] = await db('users').where('username', username)
+            .select('username')    
+        if (!username || !password) {
+            res.status(401).json('username and password required')
 
-            
-
-            // if(user) {
-            //     next()
-            // }
-             if(!user) {
-                console.log('failed in middleware')
-            //   next({ status: 401, message: 'Invalid credentials' })
-            res.json({
-                status: 401, 
-                message: 'Invalid credentials'
-            })
-            } else if (!username || !password) {
-                // next({ status: 401, message: 'username and password required' })
-                res.json({
-                        status: 401, 
-                        message: 'username and password required'
-                    })
-            }  
-            else {
-                req.username = username
-                req.password = password
-                console.log('passed')
-              next()
-            } 
+            // res.json({
+            //         status: 401, 
+            //         message: 'username and password required'
+            //     })
+        }  else if(user === null || user === undefined ) {
+            res.status(401).json('Invalid credentials')
+            // res.json({
+            //     status: 401, 
+            //     message: 'Invalid credentials'
+            //   })
+        }
+        else {
+            req.username = username
+            req.password = password
+            console.log('passed')
+            next()
+        } 
             
         }
         catch(err) {
