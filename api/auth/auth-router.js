@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const db = require('../../data/dbConfig')
 const bcrypt = require('bcryptjs')
-const { checkLoginCred, checkUsernameFree } = require('../middleware/middleware')
+const { checkLoginCred, checkUsernameFree, validLogin } = require('../middleware/middleware')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../Secrets/secrets')
 
@@ -17,7 +17,7 @@ function buildToken(user) {
 }
 
 
-router.post('/register', checkUsernameFree, async (req, res) => {
+router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
 
  try{
     const { username, password } = req.body
@@ -40,7 +40,7 @@ router.post('/register', checkUsernameFree, async (req, res) => {
 });
 
 
-router.post('/login', checkLoginCred, (req, res) => {
+router.post('/login', checkLoginCred, validLogin, (req, res) => {
   try{
       const {id, username, password} = req.body
       
