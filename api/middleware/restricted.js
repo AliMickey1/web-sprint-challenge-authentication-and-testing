@@ -17,7 +17,9 @@ module.exports = (req, res, next) => {
       }
     })
   } else {
-    next ({ status: 401, message: 'token required'})
+    // next ({ status: 401, message: 'token required'})
+    res.json({ status: 401, message: 'token required'})
+
   }
 
   // const token = req.headers.authorization
