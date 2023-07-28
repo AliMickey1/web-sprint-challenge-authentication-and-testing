@@ -60,7 +60,7 @@ router.post('/login', checkLoginCred, validLogin, (req, res) => {
          if(valid === true) {
           res.status(200).json({ 
             message: `welcome, ${username}`,
-            token: token,
+            token,
           }) 
           
         }
