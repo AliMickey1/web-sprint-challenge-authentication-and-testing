@@ -3,7 +3,7 @@ const request = require('supertest')
 const db = require('../data/dbConfig')
 const server = require('./server')
 const Users = require('./Users/userModel')
-const Auth = require('./auth/auth-router')
+// const Auth = require('./auth/auth-router')
 
 
 test('sanity', () => {
@@ -26,7 +26,7 @@ afterAll(async () => {
 const user1 = {username: 'Peter Pan', password: 'stay_young' }
 const user2 = {username: 'Tinkerbell', password: 'magic'}
 const nopass = {username: 'This Guy', password: ''}
-const nouser = {username: '', password: '1234'}
+// const nouser = {username: '', password: '1234'}
 
 describe('User model functions', () => {
   it('created user in db', async () => {
