@@ -19,6 +19,7 @@ module.exports = (req, res, next) => {
   } else {
     // next ({ status: 401, message: 'token required'})
     res.json({ status: 401, message: 'token required'})
+    next()
 
   }
 
