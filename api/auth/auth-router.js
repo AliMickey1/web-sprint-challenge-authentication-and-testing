@@ -62,9 +62,10 @@ router.post('/login', checkLoginCred, validLogin, (req, res) => {
             message: `welcome, ${username}`,
             token: token,
           }) 
+          
         }
           else {
-               res.status(401).json('Invalid credentials')
+               res.status(401).json('username and password required')
               }
         })
       }
@@ -105,6 +106,9 @@ module.exports = router;
       the response body should include a string exactly as follows: "username taken".
   */
 
+
+
+      
       // router.post('/login', checkLoginCred, (req, res) => {
 
         // res.end('implement login, please!');
