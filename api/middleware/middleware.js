@@ -31,7 +31,7 @@ async function checkUsernameFree (req, res, next) {
     try{  
         const { username } = req.body
 
-    const taken = await User.findUsername(username)
+    const taken = await User.findUsername({username: username})
     console.log(`${taken}`)
     if(!taken) {
         next()
