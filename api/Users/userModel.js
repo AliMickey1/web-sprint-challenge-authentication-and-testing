@@ -3,10 +3,8 @@ const db = require('../../data/dbConfig')
 /**
   resolves to an ARRAY with all users, each user having { id, username }
  */
-  async function find() {
-    const users = await db('users')
-    .select('id', 'username')
-    return users
+  function findUsername(username) {
+  return db('users').where('username', username)
   }
   
   /**
@@ -43,11 +41,15 @@ async function add(user) {
     return findById(newUser)
 }
 
+function checkPassword(password) {
+  return db('users').where('password', password)
+}
 
 
 module.exports = {
-    find,
+    findUsername,
     findBy,
     findById, 
     add,
+    checkPassword
 }
