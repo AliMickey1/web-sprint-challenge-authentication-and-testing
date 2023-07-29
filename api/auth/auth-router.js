@@ -3,7 +3,7 @@ const db = require('../../data/dbConfig')
 const bcrypt = require('bcryptjs')
 const { checkLoginCred, checkUsernameFree, validLogin } = require('../middleware/middleware')
 const jwt = require('jsonwebtoken')
-const { JWT_SECRET, BCRYCPT_ROUNDS } = require('../Secrets/secrets')
+const { JWT_SECRET, BCRYPT_ROUNDS } = require('../Secrets/secrets')
 
 function buildToken(user) {
   const payload = {
@@ -23,7 +23,7 @@ router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
     const { username, password } = req.body
 
 
-    const hash = await bcrypt.hashSync(password, BCRYCPT_ROUNDS)
+    const hash = await bcrypt.hashSync(password, BCRYPT_ROUNDS)
 
       const credentials = {
         username,
