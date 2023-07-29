@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const db = require('../../data/dbConfig')
-const User = require('../Users/userModel')
 const bcrypt = require('bcryptjs')
 const { checkLoginCred, checkUsernameFree, validLogin } = require('../middleware/middleware')
 const jwt = require('jsonwebtoken')
@@ -44,7 +43,8 @@ router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
 router.post('/login', checkLoginCred, validLogin, (req, res) => {
   try{
       const {id, username, password} = req.body
-      User.findUsername(username)
+      
+      db('users').where('username', username).first()
       .then(users => {
           const valid = bcrypt.compareSync(password, users.password)
           // const [user] = db('users').where('username', username)
@@ -60,7 +60,7 @@ router.post('/login', checkLoginCred, validLogin, (req, res) => {
          if(valid === true) {
           res.status(200).json({ 
             message: `welcome, ${username}`,
-            token,
+            token: token,
           }) 
           
         }

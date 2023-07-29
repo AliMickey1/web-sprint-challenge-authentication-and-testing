@@ -42,7 +42,7 @@ async function add(user) {
 }
 
 function checkPassword(password) {
-  return db('users').where('password', password)
+  return db('users').where('password', password).first()
 }
 
 
