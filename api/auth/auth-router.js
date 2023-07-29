@@ -65,7 +65,7 @@ router.post('/login', checkLoginCred, validLogin, (req, res) => {
           
         }
           else {
-               res.status(401).json('username and password required')
+               res.status(401).json('Invalid credentials')
               }
         })
       }
