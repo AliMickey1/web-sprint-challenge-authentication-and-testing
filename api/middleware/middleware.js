@@ -47,10 +47,15 @@ async function checkUsernameFree (req, res, next) {
     async function checkLoginCred (req, res, next) {
         try{
         const {username, password} = req.body
+        // const [user] = await db('users').where('username', username)
+        //     .select('username') 
+
+        // const [user] = await User.findUsername(username) 
+        User.findUsername(username) 
+            .then(user => {
 
 
-        const [user] = await db('users').where('username', username)
-            .select('username') 
+
         if(user === null || user === undefined ) {
             res.status(401).json('Invalid credentials')
          } else {
@@ -58,7 +63,7 @@ async function checkUsernameFree (req, res, next) {
             req.password = password
             next()
         } 
-            
+    })    
         }
         catch(err) {
           next(err)
