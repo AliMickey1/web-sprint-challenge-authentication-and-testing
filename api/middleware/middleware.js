@@ -31,7 +31,7 @@ async function checkUsernameFree (req, res, next) {
     try{  
         const { username } = req.body
 
-    const taken = await User.findUsername({username: username})
+    const taken = await User.findUsername(username)
     console.log(`${taken}`)
     if(!taken) {
         next()
@@ -51,7 +51,7 @@ async function checkUsernameFree (req, res, next) {
         //     .select('username') 
 
         // const [user] = await User.findUsername(username) 
-        User.findUsername(username) 
+       await User.findUsername(username) 
             .then(user => {
         if(user === null || user === undefined ) {
             res.status(401).json('Invalid credentials')
