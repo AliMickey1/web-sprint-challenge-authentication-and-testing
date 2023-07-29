@@ -4,7 +4,7 @@ const db = require('../../data/dbConfig')
   resolves to an ARRAY with all users, each user having { id, username }
  */
   function findUsername(username) {
-  return db('users').where('username', username)
+  return db('users').where('username', username).first()
   }
   
   /**
