@@ -1,6 +1,6 @@
-// const Users = require('../Users/userModel')
-// const db = require('../../data/dbConfig')
 const User = require('../Users/userModel')
+const db = require('../../data/dbConfig')
+
 
 async function validLogin (req, res, next) {
     try {
@@ -45,24 +45,20 @@ async function checkUsernameFree (req, res, next) {
   
     async function checkLoginCred (req, res, next) {
         try{
-        // const {username, password} = req.body
+        const {username, password} = req.body
 
-            
-        const taken = await User.findUsername(req.body.username)
-        // const passy = await User.checkPassword(password)
 
-        // if(!taken || taken === null || taken === undefined ) {
-        //     res.status(401).json('Invalid credentials')
-        // } else if(passy === null || passy === undefined ) {
-        //     res.status(401).json('Invalid credentials')
-        // }
-
-        if(!taken) {
+        const [user] = await db('users').where('username', username)
+            .select('username') 
+        const [user1] = await User.findUsername(username)
+        if(user1 === null || user1 === undefined ) {
+            res.status(401).json('Invalid credentials')
+        } else if(user === null || user === undefined ) {
             res.status(401).json('Invalid credentials')
         }
-         else {
-            // req.username = username
-            // req.password = password
+        else {
+            req.username = username
+            req.password = password
             next()
         } 
             

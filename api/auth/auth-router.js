@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const db = require('../../data/dbConfig')
-const User = require('../Users/userModel')
 const bcrypt = require('bcryptjs')
 const { checkLoginCred, checkUsernameFree, validLogin } = require('../middleware/middleware')
 const jwt = require('jsonwebtoken')
@@ -41,15 +40,13 @@ router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
 });
 
 
-router.post('/login', checkLoginCred, validLogin, async (req, res) => {
+router.post('/login', checkLoginCred, validLogin, (req, res) => {
   try{
       const {id, username, password} = req.body
-      const passy = await User.checkPassword(password)
       
-      // db('users').where('username', username).first()
-      // .then(users => {
-
-          const valid = bcrypt.compareSync(password, passy)
+      db('users').where('username', username).first()
+      .then(users => {
+          const valid = bcrypt.compareSync(password, users.password)
           // const [user] = db('users').where('username', username)
           // .select('username')
           console.log(`valid: ${valid}`)
@@ -70,11 +67,11 @@ router.post('/login', checkLoginCred, validLogin, async (req, res) => {
           else {
                res.status(401).json('username and password required')
               }
-        // })
+        })
       }
-  catch(err) {
-    res.status(500).json({ message: err.message })
-  }
+      catch(err) {
+        res.status(500).json({ message: err.message })
+      }
 });
 
 module.exports = router;
