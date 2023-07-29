@@ -40,7 +40,7 @@ router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
 });
 
 
-router.post('/login', checkLoginCred, validLogin, (req, res) => {
+router.post('/login', validLogin, checkLoginCred, (req, res) => {
   try{
       const {id, username, password} = req.body
       

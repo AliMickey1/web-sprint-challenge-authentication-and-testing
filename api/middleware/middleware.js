@@ -12,9 +12,11 @@ async function validLogin (req, res, next) {
         // else if ((password === null) || (password === undefined) || (password === '')) {
         //     res.status(401).json('username and password required')
         // }
-        if(!username || !password) {
+        if(!username ) {
             res.status(401).json('username and password required')
-        }
+        } else if(!password) {
+            res.status(401).json('username and password required')
+        } 
         else {
             req.username = username
             req.password = password
