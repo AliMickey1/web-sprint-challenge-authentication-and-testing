@@ -1,5 +1,5 @@
 const User = require('../Users/userModel')
-const db = require('../../data/dbConfig')
+// const db = require('../../data/dbConfig')
 
 
 async function validLogin (req, res, next) {
@@ -53,9 +53,6 @@ async function checkUsernameFree (req, res, next) {
         // const [user] = await User.findUsername(username) 
         User.findUsername(username) 
             .then(user => {
-
-
-
         if(user === null || user === undefined ) {
             res.status(401).json('Invalid credentials')
          } else {
