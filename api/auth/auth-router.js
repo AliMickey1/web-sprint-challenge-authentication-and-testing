@@ -40,23 +40,23 @@ router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
 });
 
 
-router.post('/login', checkLoginCred, validLogin, (req, res) => {
+router.post('/login', validLogin, (req, res) => {
   try{
       const {id, username, password} = req.body
       
       db('users').where('username', username).first()
       .then(users => {
           const valid = bcrypt.compareSync(password, users.password)
-          // const [user] = db('users').where('username', username)
-          // .select('username')
+          const [user] = db('users').where('username', username)
+          .select('username')
           console.log(`valid: ${valid}`)
           // if(valid) {
-            const user = {
+            const theUser = {
               id,
               username,
               password
             }
-          const token = buildToken(user)
+          const token = buildToken(theUser)
          if(valid === true) {
           res.status(200).json({ 
             message: `welcome, ${username}`,
