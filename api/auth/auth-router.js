@@ -17,7 +17,7 @@ function buildToken(user) {
 }
 
 
-router.post('/register', checkUsernameFree, validLogin, async (req, res) => {
+router.post('/register', validLogin, checkUsernameFree, async (req, res) => {
 
  try{
     const { username, password } = req.body
