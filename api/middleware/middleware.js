@@ -1,17 +1,9 @@
 const User = require('../Users/userModel')
-// const db = require('../../data/dbConfig')
 
 
 async function validLogin (req, res, next) {
     try {
         const {username, password} = req.body
-    
-        // if ((username === null) || (username === undefined) || (username === '')) {
-        //     res.status(401).json('username and password required')
-        // }
-        // else if ((password === null) || (password === undefined) || (password === '')) {
-        //     res.status(401).json('username and password required')
-        // }
         if(!username ) {
             res.status(401).json('username and password required')
         } else if(!password) {
@@ -49,10 +41,6 @@ async function checkUsernameFree (req, res, next) {
     async function checkLoginCred (req, res, next) {
         try{
         const {username, password} = req.body
-        // const [user] = await db('users').where('username', username)
-        //     .select('username') 
-
-        // const [user] = await User.findUsername(username) 
        await User.findUsername(username) 
             .then(user => {
         if(user === null || user === undefined ) {

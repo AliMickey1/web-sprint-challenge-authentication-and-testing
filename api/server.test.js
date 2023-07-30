@@ -26,10 +26,10 @@ afterAll(async () => {
 const user1 = {username: 'Peter Pan', password: 'stay_young' }
 const user2 = {username: 'Tinkerbell', password: 'magic'}
 const nopass = {username: 'This Guy', password: ''}
-// const nouser = {username: '', password: '1234'}
+const nouser = {username: '', password: '1234'}
 
 describe('User model functions', () => {
-  it('created user in db', async () => {
+  test('created user in db', async () => {
       let user
       await Users.add(user1)
       user = await db('users')
@@ -43,14 +43,7 @@ describe('User model functions', () => {
 
 describe('[GET] /jokes', () => {
   
-  it('error when no token is present', async () => {
-    // await request(server).post('/api/auth/register').send(user1)
-    // await request(server).post('/api/auth/login').send(user1)
-    // const info = await request(server).get('/api/jokes')
-    // expect(info.body.message).toEqual('token required')
-  })
-
-  test('returns authorized list of jokes', async () => {
+  test('returns all jokes from authorized list', async () => {
     await request(server).post('/api/auth/register').send(user1)
     const res = await request(server).post('/api/auth/login').send(user1)
     const info = await request(server).get('/api/jokes').set('Authorization', `${res.body.token}`)
@@ -59,28 +52,29 @@ describe('[GET] /jokes', () => {
 })
 
 describe('[POST] /register', ()=> {
-  it('successful registration', async ()=> {
+  test('successful registration', async ()=> {
     const res = await request(server).post('/api/auth/register').send(user2)
     expect(res.status).toBe(201)
   })
 
-  it('error when no password', async ()=> {
+  test('error when no password', async ()=> {
     const res = await request(server).post('/api/auth/register').send(nopass)
     expect(res.status).toBe(401)
-    // expect(res.body.message).toBe('username and password required')
-    // await request(server).post('/api/auth/login').send(user2)
-    // const info = await request(server).get()
   })
 
 })
 
-// describe('[POST] /login', ()=> {
-//   it('error when no username', async ()=> {
+describe('[POST] /login', ()=> {
+  test('successful login', async ()=> {
+    await request(server).post('/api/auth/register').send(user2)
+    const res = await request(server).post('/api/auth/login').send(user2)
+    expect(res.status).toBe(200)
+    expect(res.body.message).toContain('welcome')
+  })
+  test('error when no username', async ()=> {
+    await request(server).post('/api/auth/register').send(user1)
+    const res = await request(server).post('/api/auth/login').send(nouser)
+    expect(res.status).toBe(401)
+  })
 
-//   })
-
-//   it('error when no password', async ()=> {
-
-//   })
-
-// })
+})

@@ -47,10 +47,7 @@ router.post('/login', validLogin, checkLoginCred, (req, res) => {
       db('users').where('username', username).first()
       .then(users => {
           const valid = bcrypt.compareSync(password, users.password)
-          // const [user] = db('users').where('username', username)
-          // .select('username')
           console.log(`valid: ${valid}`)
-          // if(valid) {
             const user = {
               id,
               username,
@@ -58,15 +55,13 @@ router.post('/login', validLogin, checkLoginCred, (req, res) => {
             }
           const token = buildToken(user)
          if(valid === true) {
-          res.status(200).json({ 
-            message: `welcome, ${username}`,
-            token: token,
-          }) 
-          
-        }
-          else {
-               res.status(401).json('Invalid credentials')
-              }
+            res.status(200).json({ 
+              message: `welcome, ${username}`,
+              token: token,
+            }) 
+          } else {
+              res.status(401).json('Invalid credentials')
+          }
         })
       }
       catch(err) {
